@@ -1,0 +1,21 @@
+services:
+  hermes-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: hermes-dev
+    ports:
+      - "18789:18789"
+      - "5000:5000"
+    volumes:
+      - ${FRONTEND_LOCAL_DIR:-./frontend}:/app/frontend
+      - ${BACKEND_LOCAL_DIR:-./backend}:/app/backend
+    environment:
+      FRONTEND_DIR: /app/frontend
+      BACKEND_DIR: /app/backend
+      FRONTEND_PORT: "18789"
+      BACKEND_PORT: "5000"
+      # 按需覆盖：
+      # FRONTEND_DEV_CMD: npm run dev -- --host 0.0.0.0 --port 18789
+      # BACKEND_DEV_CMD: flask --app app run --host 0.0.0.0 --port 5000 --debug
+    restart: unless-stopped
