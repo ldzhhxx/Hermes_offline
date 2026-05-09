@@ -8,12 +8,12 @@ services:
       - "18789:18789"
       - "5000:5000"
     volumes:
-      - ./frontend:/app/frontend
-      - ./backend:/app/backend
+      - ./hermes-webui:/app/hermes-webui
+      - ./hermes-agent:/app/hermes-agent
     environment:
-      FRONTEND_PORT: "18789"
-      BACKEND_PORT: "5000"
+      HERMES_WEBUI_PORT: "18789"
+      HERMES_AGENT_PORT: "5000"
       # 按需覆盖：
-      # FRONTEND_DEV_CMD: npm run dev -- --host 0.0.0.0 --port 18789
-      # BACKEND_DEV_CMD: flask --app app run --host 0.0.0.0 --port 5000 --debug
+      # HERMES_WEBUI_DEV_CMD: npm run dev -- --host 0.0.0.0 --port 18789
+      # HERMES_AGENT_DEV_CMD: flask --app app run --host 0.0.0.0 --port 5000 --debug
     restart: unless-stopped

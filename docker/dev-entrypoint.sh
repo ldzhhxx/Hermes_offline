@@ -1,40 +1,40 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-FRONTEND_DIR="${FRONTEND_DIR:-/app/frontend}"
-BACKEND_DIR="${BACKEND_DIR:-/app/backend}"
-FRONTEND_PORT="${FRONTEND_PORT:-18789}"
-BACKEND_PORT="${BACKEND_PORT:-5000}"
-FRONTEND_DEV_CMD="${FRONTEND_DEV_CMD:-npm run dev -- --host 0.0.0.0 --port ${FRONTEND_PORT}}"
-BACKEND_DEV_CMD="${BACKEND_DEV_CMD:-python app.py}"
+HERMES_WEBUI_DIR="${HERMES_WEBUI_DIR:-${FRONTEND_DIR:-/app/hermes-webui}}"
+HERMES_AGENT_DIR="${HERMES_AGENT_DIR:-${BACKEND_DIR:-/app/hermes-agent}}"
+HERMES_WEBUI_PORT="${HERMES_WEBUI_PORT:-${FRONTEND_PORT:-18789}}"
+HERMES_AGENT_PORT="${HERMES_AGENT_PORT:-${BACKEND_PORT:-5000}}"
+HERMES_WEBUI_DEV_CMD="${HERMES_WEBUI_DEV_CMD:-${FRONTEND_DEV_CMD:-npm run dev -- --host 0.0.0.0 --port ${HERMES_WEBUI_PORT}}}"
+HERMES_AGENT_DEV_CMD="${HERMES_AGENT_DEV_CMD:-${BACKEND_DEV_CMD:-python app.py}}"
 
-if [[ ! -d "$FRONTEND_DIR" ]]; then
-  echo "[ERROR] FRONTEND_DIR not found: $FRONTEND_DIR" >&2
+if [[ ! -d "$HERMES_WEBUI_DIR" ]]; then
+  echo "[ERROR] HERMES_WEBUI_DIR not found: $HERMES_WEBUI_DIR" >&2
   exit 1
 fi
 
-if [[ ! -d "$BACKEND_DIR" ]]; then
-  echo "[ERROR] BACKEND_DIR not found: $BACKEND_DIR" >&2
+if [[ ! -d "$HERMES_AGENT_DIR" ]]; then
+  echo "[ERROR] HERMES_AGENT_DIR not found: $HERMES_AGENT_DIR" >&2
   exit 1
 fi
 
-if [[ -f "$FRONTEND_DIR/package-lock.json" ]]; then
-  npm --prefix "$FRONTEND_DIR" ci
-elif [[ -f "$FRONTEND_DIR/package.json" ]]; then
-  npm --prefix "$FRONTEND_DIR" install
+if [[ -f "$HERMES_WEBUI_DIR/package-lock.json" ]]; then
+  npm --prefix "$HERMES_WEBUI_DIR" ci
+elif [[ -f "$HERMES_WEBUI_DIR/package.json" ]]; then
+  npm --prefix "$HERMES_WEBUI_DIR" install
 else
-  echo "[ERROR] package.json not found in $FRONTEND_DIR" >&2
+  echo "[ERROR] package.json not found in $HERMES_WEBUI_DIR" >&2
   exit 1
 fi
 
-if [[ -f "$BACKEND_DIR/requirements.txt" ]]; then
-  pip install --no-cache-dir -r "$BACKEND_DIR/requirements.txt"
+if [[ -f "$HERMES_AGENT_DIR/requirements.txt" ]]; then
+  pip install --no-cache-dir -r "$HERMES_AGENT_DIR/requirements.txt"
 fi
 
 cd /app
 concurrently \
   --prefix "[{name}]" \
-  --names "backend,frontend" \
+  --names "hermes-agent,hermes-webui" \
   --kill-others-on-fail \
-  "cd $BACKEND_DIR && $BACKEND_DEV_CMD" \
-  "cd $FRONTEND_DIR && $FRONTEND_DEV_CMD"
+  "cd $HERMES_AGENT_DIR && $HERMES_AGENT_DEV_CMD" \
+  "cd $HERMES_WEBUI_DIR && $HERMES_WEBUI_DEV_CMD"

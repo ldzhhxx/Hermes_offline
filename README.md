@@ -5,8 +5,8 @@
 ## 一键 Docker 打包与启动
 
 > 约定目录：
-> - 前端代码在 `frontend/`（可 `npm run build`）
-> - 后端代码在 `backend/`（默认 `python app.py`）
+> - 前端代码在 `hermes-webui/`（可 `npm run build`）
+> - 后端代码在 `hermes-agent/`（默认 `python app.py`）
 
 ### 1) 构建镜像（联网环境执行一次）
 
@@ -47,7 +47,7 @@ docker run -d --name hermes-offline -p 18789:18789 -p 5000:5000 hermes-offline:l
 - `BACKEND_START_CMD`：后端启动命令（默认 `python app.py`）
 - `BACKEND_PORT`：后端端口（默认 `5000`）
 - `FRONTEND_PORT`：前端端口（默认 `18789`）
-- `FRONTEND_BUILD_DIR`：前端构建产物目录（默认优先 `/app/frontend/dist`，其次 `/app/frontend/build`）
+- `FRONTEND_BUILD_DIR`：前端构建产物目录（默认优先 `/app/hermes-webui/dist`，其次 `/app/hermes-webui/build`）
 
 示例：
 
@@ -70,7 +70,7 @@ docker compose -f docker-compose.dev.yml up --build
 ```
 
 特点：
-- 挂载本地源码（`./frontend`、`./backend`）到容器内；
+- 挂载本地源码（`./hermes-webui`、`./hermes-agent`）到容器内；
 - 改代码后直接生效（前端走 dev server，后端走可配置启动命令）；
 - 仍使用固定端口：前端 `18789`，后端 `5000`。
 
