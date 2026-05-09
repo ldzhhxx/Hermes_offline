@@ -5,7 +5,7 @@
 ## 一键 Docker 打包与启动
 
 > 约定目录：
-> - 前端代码在 `hermes-webui/`（可 `npm run build`）
+> - 前端代码在 `hermes-webui/`（Python Web 服务，无需 npm build）
 > - 后端代码在 `hermes-agent/`（默认 `python app.py`）
 
 ### 1) 构建镜像（联网环境执行一次）
@@ -47,13 +47,14 @@ docker run -d --name hermes-offline -p 18789:18789 -p 5000:5000 hermes-offline:l
 - `BACKEND_START_CMD`：后端启动命令（默认 `python app.py`）
 - `BACKEND_PORT`：后端端口（默认 `5000`）
 - `FRONTEND_PORT`：前端端口（默认 `18789`）
-- `FRONTEND_BUILD_DIR`：前端构建产物目录（默认优先 `/app/hermes-webui/dist`，其次 `/app/hermes-webui/build`）
+- `FRONTEND_START_CMD`：前端启动命令（默认 `python server.py --host 0.0.0.0 --port $FRONTEND_PORT`）
 
 示例：
 
 ```bash
 docker run -d --name hermes-offline \
   -e BACKEND_START_CMD="gunicorn -b 0.0.0.0:5000 app:app" \
+  -e FRONTEND_START_CMD="python server.py --host 0.0.0.0 --port 18789" \
   -p 18789:18789 -p 5000:5000 \
   hermes-offline:latest
 ```
