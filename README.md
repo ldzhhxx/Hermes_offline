@@ -58,6 +58,43 @@ docker run -d --name hermes-offline \
   hermes-offline:latest
 ```
 
+
+## 开发调试（推荐，不用每次重打镜像）
+
+新增了开发专用容器配置：`Dockerfile.dev` + `docker-compose.dev.yml`。
+
+### 启动开发环境
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+特点：
+- 挂载本地源码（`./frontend`、`./backend`）到容器内；
+- 改代码后直接生效（前端走 dev server，后端走可配置启动命令）；
+- 仍使用固定端口：前端 `18789`，后端 `5000`。
+
+### 常用命令
+
+```bash
+# 后台启动
+docker compose -f docker-compose.dev.yml up -d --build
+
+# 查看日志
+docker compose -f docker-compose.dev.yml logs -f
+
+# 停止并清理
+docker compose -f docker-compose.dev.yml down
+```
+
+### 按项目技术栈覆盖启动命令
+
+在 `docker-compose.dev.yml` 里设置：
+- `FRONTEND_DEV_CMD`（默认：`npm run dev -- --host 0.0.0.0 --port 18789`）
+- `BACKEND_DEV_CMD`（默认：`python app.py`）
+
+例如 Flask/FastAPI/Django 可替换为各自带热重载的启动命令。
+
 ## 代码更新后如何更新镜像
 
 每次代码变更后，按以下流程：
