@@ -1,0 +1,17 @@
+services:
+  hermes:
+    build: .
+    ports:
+      - "5000:5000"
+      - "18789:18789"
+    environment:
+      HERMES_BACKEND_PORT: 5000
+      HERMES_FRONTEND_PORT: 18789
+      # 按项目实际情况覆盖下面两个启动命令
+      BACKEND_CMD: "python -m flask --app hermes-agent run --host 0.0.0.0 --port 5000"
+      FRONTEND_CMD: "npm --prefix /app/hermes-webui run dev -- --host 0.0.0.0 --port 18789"
+    volumes:
+      - ./hermes-agent:/app/hermes-agent
+      - ./hermes-webui:/app/hermes-webui
+    stdin_open: true
+    tty: true
